@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C&L 星空露營 | 室友許願池</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Montserrat:ital,wght@0,700;0,900;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --brand-blue: #0F172A; 
+            --brand-gold: #F3C969; 
+            --brand-green: #7AFFA6;
+            --text-dark: #1A1A1A;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(243, 201, 105, 0.3);
+            border-radius: 24px;
+            padding: 40px 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--brand-gold);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .highlight { color: var(--brand-green); font-weight: 700; font-size: 18px; }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: var(--brand-gold);
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        #my-name {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #my-name:focus {
+            border-color: var(--brand-gold);
+            box-shadow: 0 0 15px rgba(243, 201, 105, 0.3);
+        }
+
+        .counter-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #counter {
+            font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: white;
+        }
+        
+        .count-num { color: var(--brand-gold); }
+        .count-full { color: var(--brand-green); }
+
+        .mate-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .mate-chip {
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.05);
+            user-select: none;
+        }
+
+        .mate-chip.selected {
+            background: var(--brand-gold);
+            color: var(--brand-blue);
+            border-color: var(--brand-gold);
+            box-shadow: 0 0 15px rgba(243, 201, 105, 0.5);
+            transform: scale(1.05);
+        }
+
+        .mate-chip:active { transform: scale(0.95); }
+
+        .mate-grid.full .mate-chip:not(.selected) {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: scale(0.98);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--brand-gold);
+            color: var(--brand-blue);
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            letter-spacing: 2px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(243, 201, 105, 0.3);
+        }
+
+        .action-btn:disabled {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.3);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .action-btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+
+        /* 成功動畫 */
+        .success-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;
+        }
+        .success-overlay.show { opacity: 1; visibility: visible; }
+        .success-icon { font-size: 60px; color: var(--brand-green); margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <i class="fa-solid fa-campground" style="font-size: 40px; color: var(--brand-gold); margin-bottom: 15px;"></i>
+        <h1 class="title">Secret Wishlist</h1>
+        <p class="subtitle">
+            C&L 星空露營即將到來！<br>
+            請在下方點選 <span class="highlight">10</span> 位<br>
+            你最想共度美好夜晚的夥伴。<br>
+            <span style="font-size: 12px; color: #888; display: block; margin-top: 5px;">(本名單完全匿名直達主辦單位，保密防諜！)</span>
+        </p>
+
+        <div class="input-group">
+            <label class="input-label" for="my-name">WHO ARE YOU?</label>
+            <input type="text" id="my-name" placeholder="請輸入您自己的名字" autocomplete="off">
+        </div>
+
+        <div class="counter-box">
+            <div id="counter">已挑選：<span class="count-num" id="count-number">0</span> / 10</div>
+        </div>
+
+        <div class="mate-grid" id="mate-grid"></div>
+
+        <button class="action-btn" id="submit-btn" onclick="submitWishlist()" disabled>
+            請先選滿 10 位夥伴
+        </button>
+    </div>
+
+    <!-- 送出成功畫面 -->
+    <div class="success-overlay" id="success-screen">
+        <i class="fa-solid fa-paper-plane success-icon"></i>
+        <h2 style="font-family: 'Montserrat', sans-serif; font-size: 24px; color: white; margin-bottom: 15px;">WISH SENT!</h2>
+        <p style="color: rgba(255,255,255,0.8); line-height: 1.8; text-align: center; font-weight: 500; font-size: 15px;">
+            您的願望清單已秘密送達主辦單位！<br><br>
+            接下來請鎖定群組訊息，<br>
+            準備迎接正式的專屬邀請卡與分類帽儀式！
+        </p>
+    </div>
+
+<script>
+    // ========================================================
+    // 已更新為您專屬的 Google Apps Script 網址
+    // ========================================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbwMBmFaeUXsiZZBOH-LeZfacjOzZ7AdwjBbKYLdfi_2FaW0ixy_7xA8HHujYVQeeLNv/exec";
+    
+    // 門市名單 (已更新為最新 48 人版本)
+    const STORE_MEMBERS = [
+        "Jiaen", "Helen", "Ken", "Jiayou", "Ray", "Cary", "Kelly", "Erica", "Jacky", "莎白", 
+        "Chris", "Lars", "Terry", "Chloe", "Mike", "Cindy", "Nick", "Judy", "Cora", "血倫", 
+        "錢錢", "小池", "R1", "Tom", "Jack", "Taylor", "Ash", "小Lynn", "Luke", "Roy", 
+        "Wendy", "Sandy", "Toby", "Yu Heng", "小班", "Jason", "Joy", "JT.", "Lili", "興元", 
+        "Jing", "小蔣", "Willy", "Billy", "Archer", "哈納", "Liz", "Choco"
+    ];
+
+    let selectedMates = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('mate-grid');
+        STORE_MEMBERS.forEach(name => {
+            const chip = document.createElement('div');
+            chip.className = 'mate-chip';
+            chip.innerText = name;
+            chip.onclick = () => toggleMate(name, chip);
+            grid.appendChild(chip);
+        });
+    });
+
+    function toggleMate(name, chipElement) {
+        const index = selectedMates.indexOf(name);
+        const grid = document.getElementById('mate-grid');
+        
+        if (index > -1) {
+            selectedMates.splice(index, 1);
+            chipElement.classList.remove('selected');
+        } else {
+            if (selectedMates.length >= 10) return;
+            selectedMates.push(name);
+            chipElement.classList.add('selected');
+        }
+        updateUI();
+    }
+
+    function updateUI() {
+        const countSpan = document.getElementById('count-number');
+        const grid = document.getElementById('mate-grid');
+        const btn = document.getElementById('submit-btn');
+        const count = selectedMates.length;
+
+        countSpan.innerText = count;
+
+        if (count === 10) {
+            countSpan.className = "count-full";
+            grid.classList.add('full'); 
+            btn.disabled = false;
+            btn.innerText = "悄悄送出願望清單";
+        } else {
+            countSpan.className = "count-num";
+            grid.classList.remove('full'); 
+            btn.disabled = true;
+            btn.innerText = `還需挑選 ${10 - count} 位夥伴`;
+        }
+    }
+
+    function submitWishlist() {
+        const myName = document.getElementById('my-name').value.trim();
+        
+        if (!myName) {
+            alert("⚠️ 請先在上方輸入「您自己的名字」喔！");
+            document.getElementById('my-name').focus();
+            return;
+        }
+
+        const matesStr = selectedMates.join('、');
+        const btn = document.getElementById('submit-btn');
+        
+        // 按鈕轉為傳送中狀態
+        btn.innerText = "傳送中...";
+        btn.disabled = true;
+
+        // 打包資料送到您的 Google 試算表
+        const requestUrl = `${API_URL}?name=${encodeURIComponent(myName)}&mates=${encodeURIComponent(matesStr)}`;
+
+        fetch(requestUrl, { mode: 'no-cors' })
+            .then(() => {
+                // 傳送成功，顯示成功畫面
+                document.getElementById('success-screen').classList.add('show');
+            })
+            .catch(error => {
+                alert("傳送似乎遇到一點問題，請檢查網路連線或稍後再試！");
+                btn.innerText = "悄悄送出願望清單";
+                btn.disabled = false;
+            });
+    }
+</script>
+
+</body>
+</html>
